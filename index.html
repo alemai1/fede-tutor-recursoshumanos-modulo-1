@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Módulo Organización y Recursos Humanos</div>
+        </header>
+
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Conceptos clave, definiciones, organización.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Ética, derechos del personal.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Organización, Funciones, Personal.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Ejercicios de Recursos Humanos.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        // ===== ACTIVIDADES: validaciones de texto simplificadas ===
+        const modules = {
+
+            // ===================== SÍNTESIS =====================
+            sintesis: [
+                {
+                    type: 'text',
+                    badge: 'Unidad 1',
+                    title: 'Organización',
+                    instruction: 'Con tus palabras: ¿qué es una organización?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        let puntos = 0;
+                        if (v.includes('personas') || v.includes('grupo') || v.includes('social')) puntos++;
+                        if (v.includes('objetiv') || v.includes('meta') || v.includes('proposito')) puntos++;
+                        return puntos >= 1;
+                    },
+                    tutor: 'Pensá en personas que trabajan juntas para algo.',
+                    explanation: 'Una organización es un conjunto de personas que coordinan acciones para lograr objetivos comunes.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Unidad 1',
+                    title: 'Finalidad',
+                    instruction: '¿Por qué se dice que una organización tiene finalidad?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('objetiv') || v.includes('proposito') || v.includes('razon');
+                    },
+                    tutor: 'Toda organización existe para algo.',
+                    explanation: 'La finalidad es el propósito que guía las acciones organizacionales.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Elementos',
+                    title: 'Elementos Organizacionales',
+                    instruction: 'Selecciona los elementos básicos de una organización.',
+                    items: [
+                        { text: 'Personas', correct: true },
+                        { text: 'Objetivos', correct: true },
+                        { text: 'Estructura', correct: true },
+                        { text: 'Suerte', correct: false }
+                    ],
+                    tutor: 'Pensá qué cosas son necesarias para funcionar.',
+                    explanation: 'Toda organización necesita personas, objetivos y estructura.'
+                },
+                {
+                    type: 'text',
+                    badge: 'RRHH',
+                    title: 'Recursos Humanos',
+                    instruction: '¿Qué son los Recursos Humanos?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('personas') || v.includes('trabajador') || v.includes('emplead');
+                    },
+                    tutor: 'Pensá en quienes trabajan en la empresa.',
+                    explanation: 'Los Recursos Humanos son las personas que integran una organización.'
+                },
+                {
+                    type: 'blanks',
+                    badge: 'Funciones',
+                    title: 'Funciones de RRHH',
+                    instruction: 'Completa dos funciones del área de RRHH.',
+                    blanks: ['Selección', 'Capacitación'],
+                    tutor: 'Ingresar personas y ayudarlas a crecer.',
+                    explanation: 'RRHH se ocupa de selección, capacitación y desarrollo.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Estructura',
+                    title: 'Organigrama',
+                    instruction: '¿Para qué sirve un organigrama?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('orden') || v.includes('roles') || v.includes('jerarquia');
+                    },
+                    tutor: 'Muestra quién hace qué.',
+                    explanation: 'El organigrama representa la estructura y jerarquía.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Tipos',
+                    title: 'Tipos de Organización',
+                    instruction: 'Selecciona tipos de organización.',
+                    items: [
+                        { text: 'Pública', correct: true },
+                        { text: 'Privada', correct: true },
+                        { text: 'Mixta', correct: true },
+                        { text: 'Ficticia', correct: false }
+                    ],
+                    tutor: 'Depende del origen del capital.',
+                    explanation: 'Existen organizaciones públicas, privadas y mixtas.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Objetivos',
+                    title: 'Objetivos Organizacionales',
+                    instruction: '¿Por qué son importantes los objetivos?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('guia') || v.includes('direccion') || v.includes('orient');
+                    },
+                    tutor: 'Sin objetivos no hay rumbo.',
+                    explanation: 'Los objetivos orientan las decisiones.'
+                },
+                {
+                    type: 'blanks',
+                    badge: 'Valores',
+                    title: 'Valores',
+                    instruction: 'Escribí dos valores organizacionales.',
+                    blanks: ['Respeto', 'Responsabilidad'],
+                    tutor: 'Guían el comportamiento.',
+                    explanation: 'Los valores influyen en la conducta laboral.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Cultura',
+                    title: 'Cultura Organizacional',
+                    instruction: '¿Qué es la cultura organizacional?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('costumbre') || v.includes('forma') || v.includes('trabajar');
+                    },
+                    tutor: 'Es la forma habitual de trabajar.',
+                    explanation: 'La cultura organizacional refleja valores y prácticas.'
+                }
+            ],
+
+            // ===================== ANÁLISIS =====================
+            analisis: [
+                {
+                    type: 'traffic',
+                    badge: 'Ética',
+                    title: 'Confidencialidad',
+                    instruction: 'Marca lo correcto (color verde) y lo incorrecto (color rojo).',
+                    items: [
+                        { text: 'Guardar datos del personal', color: 'green' },
+                        { text: 'Divulgar información privada', color: 'red' },
+                        { text: 'Hablar de legajos en público', color: 'red' }
+                    ],
+                    tutor: 'La información es confidencial.',
+                    explanation: 'RRHH debe proteger los datos del personal.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Rol',
+                    title: 'Funciones de RRHH',
+                    instruction: 'Selecciona funciones propias de RRHH.',
+                    items: [
+                        { text: 'Seleccionar personal', correct: true },
+                        { text: 'Capacitar empleados', correct: true },
+                        { text: 'Sancionar sin normas', correct: false }
+                    ],
+                    tutor: 'RRHH gestiona personas.',
+                    explanation: 'RRHH acompaña el desarrollo del personal.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Clima',
+                    title: 'Clima Laboral',
+                    instruction: '¿Por qué es importante el clima laboral?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('ambiente') || v.includes('rendimiento') || v.includes('motiv');
+                    },
+                    tutor: 'Influye en cómo se trabaja.',
+                    explanation: 'Un buen clima mejora la productividad.'
+                },
+                {
+                    type: 'traffic',
+                    badge: 'Comunicación',
+                    title: 'Comunicación Interna',
+                    instruction: 'Verde si ayuda, rojo si perjudica.',
+                    items: [
+                        { text: 'Información clara', color: 'green' },
+                        { text: 'Rumores', color: 'red' },
+                        { text: 'Escucha activa', color: 'green' }
+                    ],
+                    tutor: 'La comunicación ordena.',
+                    explanation: 'Una comunicación clara evita conflictos.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Conflicto',
+                    title: 'Favoritismo',
+                    instruction: '¿Por qué el favoritismo genera problemas?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('injust') || v.includes('conflict') || v.includes('desmotiv');
+                    },
+                    tutor: 'No todos se sienten tratados igual.',
+                    explanation: 'El favoritismo afecta el clima laboral.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Normas',
+                    title: 'Reglamento Interno',
+                    instruction: 'Selecciona funciones del reglamento.',
+                    items: [
+                        { text: 'Ordenar la convivencia', correct: true },
+                        { text: 'Imponer castigos arbitrarios', correct: false },
+                        { text: 'Definir derechos y deberes', correct: true }
+                    ],
+                    tutor: 'Las normas organizan.',
+                    explanation: 'El reglamento establece reglas claras.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Evaluación',
+                    title: 'Evaluación de Desempeño',
+                    instruction: '¿Para qué sirve evaluar el desempeño?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('mejor') || v.includes('feedback') || v.includes('crecer');
+                    },
+                    tutor: 'Ayuda a mejorar.',
+                    explanation: 'Permite detectar fortalezas y debilidades.'
+                },
+                {
+                    type: 'traffic',
+                    badge: 'Conflictos',
+                    title: 'Manejo de Conflictos',
+                    instruction: 'Identifica conductas que ayudan.',
+                    items: [
+                        { text: 'Escuchar', color: 'green' },
+                        { text: 'Ignorar', color: 'red' },
+                        { text: 'Dialogar', color: 'green' }
+                    ],
+                    tutor: 'Dialogar siempre ayuda.',
+                    explanation: 'La comunicación reduce conflictos.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Motivación',
+                    title: 'Motivar al Personal',
+                    instruction: '¿Por qué es importante motivar?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('productiv') || v.includes('compromis');
+                    },
+                    tutor: 'Personas motivadas rinden más.',
+                    explanation: 'La motivación mejora el desempeño.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Ética',
+                    title: 'Conductas Éticas',
+                    instruction: 'Selecciona conductas éticas.',
+                    items: [
+                        { text: 'Respeto', correct: true },
+                        { text: 'Discriminación', correct: false },
+                        { text: 'Igualdad', correct: true }
+                    ],
+                    tutor: 'La ética es clave.',
+                    explanation: 'La ética promueve relaciones justas.'
+                }
+            ],
+
+            // ===================== ESCENARIOS =====================
+            escenarios: [
+                {
+                    type: 'text',
+                    badge: 'Ingreso',
+                    title: 'Nuevo Empleado',
+                    instruction: 'Un nuevo empleado está desorientado. ¿Cómo lo ayudás?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('orient') || v.includes('acompan') || v.includes('explic');
+                    },
+                    tutor: 'Acompañar reduce la ansiedad.',
+                    explanation: 'La orientación inicial facilita la adaptación.'
+                },
+                {
+                    type: 'traffic',
+                    badge: 'Comunicación',
+                    title: 'Reunión',
+                    instruction: 'Marca lo adecuado en una reunión.',
+                    items: [
+                        { text: 'Escuchar a todos', color: 'green' },
+                        { text: 'Interrumpir', color: 'red' },
+                        { text: 'Respetar turnos', color: 'green' }
+                    ],
+                    tutor: 'El respeto es clave.',
+                    explanation: 'La comunicación respetuosa mejora el trabajo.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Conflicto',
+                    title: 'Empleado enojado',
+                    instruction: 'Un empleado reclama airadamente. ¿Cómo respondés?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('calma') || v.includes('escuch') || v.includes('dialog');
+                    },
+                    tutor: 'Bajar el tono ayuda.',
+                    explanation: 'Escuchar y dialogar reduce el conflicto.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Selección',
+                    title: 'Entrevista Laboral',
+                    instruction: 'Selecciona conductas correctas.',
+                    items: [
+                        { text: 'Escuchar activamente', correct: true },
+                        { text: 'Juzgar', correct: false },
+                        { text: 'Preguntar con respeto', correct: true }
+                    ],
+                    tutor: 'La entrevista debe ser profesional.',
+                    explanation: 'La entrevista evalúa competencias.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Clima',
+                    title: 'Mal Clima',
+                    instruction: 'Detectás tensión en el equipo. ¿Qué hacés?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('dialog') || v.includes('interven') || v.includes('escuch');
+                    },
+                    tutor: 'No ignorar señales.',
+                    explanation: 'Intervenir mejora el clima.'
+                },
+                {
+                    type: 'traffic',
+                    badge: 'Ética',
+                    title: 'Discriminación',
+                    instruction: 'Marca conductas discriminatorias.',
+                    items: [
+                        { text: 'Trato desigual', color: 'red' },
+                        { text: 'Igualdad de oportunidades', color: 'green' },
+                        { text: 'Burlas', color: 'red' }
+                    ],
+                    tutor: 'La discriminación no se tolera.',
+                    explanation: 'RRHH debe prevenir discriminación.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Evaluación',
+                    title: 'Feedback',
+                    instruction: '¿Cómo darías feedback constructivo?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('respeto') || v.includes('mejorar') || v.includes('suger');
+                    },
+                    tutor: 'No atacar a la persona.',
+                    explanation: 'El feedback debe ser respetuoso.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Capacitación',
+                    title: 'Capacitar',
+                    instruction: 'Selecciona beneficios de la capacitación.',
+                    items: [
+                        { text: 'Mejor desempeño', correct: true },
+                        { text: 'Desmotivación', correct: false },
+                        { text: 'Crecimiento profesional', correct: true }
+                    ],
+                    tutor: 'Capacitar es invertir.',
+                    explanation: 'La capacitación mejora habilidades.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Cambio',
+                    title: 'Cambio Organizacional',
+                    instruction: '¿Por qué los cambios generan resistencia?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('miedo') || v.includes('incertidumbre');
+                    },
+                    tutor: 'El cambio genera temor.',
+                    explanation: 'La resistencia es una reacción natural.'
+                },
+                {
+                    type: 'traffic',
+                    badge: 'Cierre',
+                    title: 'Resolución',
+                    instruction: 'Elegí la mejor acción.',
+                    items: [
+                        { text: 'Escuchar y dialogar', color: 'green' },
+                        { text: 'Ignorar el problema', color: 'red' },
+                        { text: 'Amenazar', color: 'red' }
+                    ],
+                    tutor: 'Dialogar siempre.',
+                    explanation: 'La resolución pacífica es clave.'
+                }
+            ],
+
+            // ===================== PRÁCTICA =====================
+            practica: [
+                {
+                    type: 'checklist',
+                    badge: 'Inicio',
+                    title: 'Primer Día',
+                    instruction: 'Marca acciones correctas.',
+                    items: [
+                        { text: 'Presentar la empresa', correct: true },
+                        { text: 'Ignorar al nuevo', correct: false },
+                        { text: 'Explicar normas', correct: true }
+                    ],
+                    tutor: 'El inicio es clave.',
+                    explanation: 'Una buena inducción facilita adaptación.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Archivo',
+                    title: 'Legajo',
+                    instruction: '¿Qué es un legajo?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('document') || v.includes('registro') || v.includes('emplead');
+                    },
+                    tutor: 'Es información del trabajador.',
+                    explanation: 'El legajo contiene datos laborales.'
+                },
+                {
+                    type: 'blanks',
+                    badge: 'Documentos',
+                    title: 'Documentación',
+                    instruction: 'Completa dos documentos laborales.',
+                    blanks: ['Contrato', 'DNI'],
+                    tutor: 'Son datos personales.',
+                    explanation: 'Se requiere documentación básica.'
+                },
+                {
+                    type: 'traffic',
+                    badge: 'Archivo',
+                    title: 'Datos',
+                    instruction: 'Marca lo correcto.',
+                    items: [
+                        { text: 'Guardar datos con cuidado', color: 'green' },
+                        { text: 'Compartir libremente', color: 'red' }
+                    ],
+                    tutor: 'La información es privada.',
+                    explanation: 'Los datos deben protegerse.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Horario',
+                    title: 'Asistencia',
+                    instruction: '¿Por qué controlar asistencia?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('orden') || v.includes('registro') || v.includes('control');
+                    },
+                    tutor: 'Permite organización.',
+                    explanation: 'El control de asistencia ordena.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Convivencia',
+                    title: 'Respeto',
+                    instruction: 'Selecciona conductas respetuosas.',
+                    items: [
+                        { text: 'Escuchar', correct: true },
+                        { text: 'Burlarse', correct: false },
+                        { text: 'Trato cordial', correct: true }
+                    ],
+                    tutor: 'El respeto es básico.',
+                    explanation: 'El respeto mejora el clima.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Normas',
+                    title: 'Reglas',
+                    instruction: '¿Por qué existen normas?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('orden') || v.includes('conviv');
+                    },
+                    tutor: 'Las normas organizan.',
+                    explanation: 'Permiten convivencia laboral.'
+                },
+                {
+                    type: 'traffic',
+                    badge: 'Cierre',
+                    title: 'Responsabilidad',
+                    instruction: 'Marca conductas responsables.',
+                    items: [
+                        { text: 'Cumplir horarios', color: 'green' },
+                        { text: 'Faltar sin aviso', color: 'red' }
+                    ],
+                    tutor: 'La responsabilidad es clave.',
+                    explanation: 'La responsabilidad mejora el trabajo.'
+                },
+                {
+                    type: 'text',
+                    badge: 'Ética',
+                    title: 'Trato Justo',
+                    instruction: '¿Qué implica trato justo?',
+                    validation: (raw) => {
+                        const v = normalizar(raw);
+                        return v.includes('igualdad') || v.includes('respeto');
+                    },
+                    tutor: 'Todos por igual.',
+                    explanation: 'El trato justo evita conflictos.'
+                },
+                {
+                    type: 'checklist',
+                    badge: 'Final',
+                    title: 'Buen RRHH',
+                    instruction: 'Selecciona características de un buen RRHH.',
+                    items: [
+                        { text: 'Escucha', correct: true },
+                        { text: 'Autoritarismo', correct: false },
+                        { text: 'Ética', correct: true }
+                    ],
+                    tutor: 'RRHH acompaña.',
+                    explanation: 'Un buen RRHH gestiona con ética.'
+                }
+            ]
+        };
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
